@@ -20,22 +20,64 @@ describe TicTacToe do
     end
   end
   
-  describe "#place_a_marker" do
+  describe "#place_marker" do
     it "should put a marker for a player" do
       game = TicTacToe.new
       player = Player.new
-      game.place_a_marker("A1", player)
+      game.place_marker("A1", player)
       game.board["A"]["1"].should == player.marker
       
-      game.place_a_marker("C3", player)
+      game.place_marker("C3", player)
       game.board["C"]["3"].should == player.marker
     end
     
     it "should put a marker for a player if input is out of range" do
       game = TicTacToe.new
       player = Player.new
-      game.place_a_marker("A4", player)
+      game.place_marker("A4", player)
       game.board["A"].should be_nil
+    end
+  end
+
+  describe "#scan_row" do
+    it "should return coordinate with player's markers" do
+      game = TicTacToe.new
+      player = Player.new
+      game.place_marker("A1", player)
+      game.place_marker("B1", player)
+      game.scan_row("1", player).should == ["A1", "B1"]
+      game.scan_row("2", player).should == []
+    end
+  end
+  
+  describe "#scan_col" do
+    it "should return coordinate with player's markers" do
+      game = TicTacToe.new
+      player = Player.new
+      game.place_marker("C1", player)
+      game.place_marker("C3", player)
+      game.scan_col("C", player).should == ["C1", "C3"]
+      game.scan_col("A", player).should == []      
+    end
+  end
+  
+  describe "#scan_diag_w2e" do
+    it "should return coordinate with player's markers" do
+      game = TicTacToe.new
+      player = Player.new
+      game.place_marker("A1", player)
+      game.place_marker("C3", player)
+      game.scan_diag_w2e(player).should == ["A1", "C3"]
+    end
+  end
+
+  describe "#scan_diag_e2w" do
+    it "should return coordinate with player's markers" do
+      game = TicTacToe.new
+      player = Player.new
+      game.place_marker("A3", player)
+      game.place_marker("C1", player)
+      game.scan_diag_e2w(player).should == ["A3", "C1"]
     end
   end
 
