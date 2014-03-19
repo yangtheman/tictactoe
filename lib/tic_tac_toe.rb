@@ -1,66 +1,66 @@
-class TicTacToe 
+class TicTacToe
   
-  X_COORD = ["A", "B", "C"]
-  Y_COORD = ["1", "2", "3"]
+  X_COORDS = ["A", "B", "C"]
+  Y_COORDS = ["1", "2", "3"]
   
   attr_reader :board
   
   def initialize
+    @best_cells = ["B2", "A1", "A3", "C1", "C3"]
     @board = {}
+    X_COORDS.each do |x|
+      @board[x] = {}
+    end
+  end
+  
+  def x_coords
+    X_COORDS
+  end
+  
+  def y_coords
+    Y_COORDS
   end
   
   def place_marker(coord_string, player)
-    x, y = coord_string.split("")
-    if coord_valid?(x, y)
-      @board[x] ||= {}
-      @board[x][y] = player.marker
-    end
+    x, y = coord_string.upcase.split("")
+    return nil unless coord_valid?(x, y)
+    deduct_from_best_cells(x, y)
+    @board[x][y] = player
   end
   
-  def scan_row(row, player)
-    X_COORD.inject([]) do |array, x|
-      array << "#{x}#{row}" if player_cell?(x, row, player)
-      array
-    end
+  def best_cells_left
+    @best_cells
   end
   
-  def scan_col(col, player)
-    Y_COORD.inject([]) do |array, y|
-      array << "#{col}#{y}" if player_cell?(col, y, player)
-      array
-    end
+  def board_full?
+    sum = X_COORDS.inject(0) {|sum, x| sum += @board[x].size}
+    sum == 9
   end
   
-  def scan_diag_w2e(player)
-    array = []
-    X_COORD.each_with_index do |x, index|
-      y = Y_COORD[index]
-      array << "#{x}#{y}" if player_cell?(x, y, player)
-    end
-    array
+  def player_cell?(x, y, player)
+    @board[x][y] == player
   end
   
-  def scan_diag_e2w(player)
-    array = []
-    X_COORD.each_with_index do |x, index|
-      y = Y_COORD.reverse[index]
-      array << "#{x}#{y}" if player_cell?(x, y, player)
-    end
-    array
+  def empty_cell?(x, y)
+    @board[x][y].nil?
+  end
+  
+  def cell_marker(x, y)
+    @board[x][y].nil? ? "." : @board[x][y].marker
   end
   
   private
-  
-  def player_cell?(x, y, player)
-    @board[x] && @board[x][y] == player.marker
-  end
-    
+        
   def coord_valid?(x, y)
-    within_range?(x, y) && (@board[x] == nil || @board[x][y] == nil)
+    within_range?(x, y) && @board[x][y].nil?
   end
   
   def within_range?(x, y)
-    X_COORD.include?(x) && Y_COORD.include?(y)
+    X_COORDS.include?(x) && Y_COORDS.include?(y)
+  end
+  
+  def deduct_from_best_cells(x, y)
+    @best_cells -= ["#{x}#{y}"]
   end
   
 end
