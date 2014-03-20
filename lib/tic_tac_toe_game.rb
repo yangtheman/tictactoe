@@ -20,11 +20,11 @@ class TicTacToeGame
         
         cpu_scan = scan_board(@cpu)
         cpu_turn(cpu_scan, human_scan)
+        print_board
         break if game_finished?(scan_board(@cpu))
       else
         puts "Invalid Move. Please try again."
       end
-      print_board
     end
     play if continue_to_play? 
   end
