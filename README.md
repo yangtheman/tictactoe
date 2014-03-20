@@ -8,7 +8,7 @@ And just follow instruction on the screen.
 
 ## Sample Play
 
-```ruby
+```
 
 $ ruby tic_tac_toe_game_play.rb 
 Welcome to a Tic-Tac-Toe Game!
