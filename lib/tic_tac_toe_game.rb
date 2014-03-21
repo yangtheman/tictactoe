@@ -6,7 +6,7 @@ require_relative './tic_tac_toe_print'
 class TicTacToeGame
   
   def initialize
-    @game = TicTacToe.new
+    @board = TicTacToe.new
     @cpu = Player.new
     @human = Player.new(false)
   end
@@ -18,11 +18,11 @@ class TicTacToeGame
   end
          
   def print_board
-    TicTacToePrint.print_board(@game)
+    TicTacToePrint.print_board(@board)
   end
   
   def scan_board(player)
-    TicTacToeScan.new(@game, player)
+    TicTacToeScan.new(@board, player)
   end       
           
   private
@@ -56,12 +56,12 @@ class TicTacToeGame
   def human_turn
     print "Your Next Move (for example A1 or C3): "
     input = STDIN.gets.chomp().upcase
-    @game.place_marker(input, @human)
+    @board.place_marker(input, @human)
   end
 
   def cpu_turn(cpu_scan, human_scan)
     cpu_cell = calculate_cpu_cell(cpu_scan, human_scan)
-    @game.place_marker(cpu_cell, @cpu)
+    @board.place_marker(cpu_cell, @cpu)
     puts "CPU put his/her marker on #{cpu_cell}"
   end
       
@@ -73,8 +73,8 @@ class TicTacToeGame
       cpu_cell = playable_cells[2].first
     elsif to_block[2] && to_block[2].length > 0
       cpu_cell = to_block[2].first
-    elsif @game.best_cells_left.length > 0
-      cpu_cell = @game.best_cells_left.first
+    elsif @board.best_cells_left.length > 0
+      cpu_cell = @board.best_cells_left.first
     elsif playable_cells[1] && playable_cells[1].length > 0
       cpu_cell = playable_cells[1].first
     else
@@ -91,7 +91,7 @@ class TicTacToeGame
         puts "Sorry. You Lost!"
       end
       return true
-    elsif @game.board_full? 
+    elsif @board.board_full? 
       puts "Awwwww. No one won! Game is tied!"
       return true
     end
@@ -101,6 +101,7 @@ class TicTacToeGame
   def continue_to_play?
     print "Would you like to play again? (Y or N): "
     if STDIN.gets.chomp() =~ /Y|y/
+      @board = TicTacToe.new
       return true
     end
     false
