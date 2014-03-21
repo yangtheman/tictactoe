@@ -10,41 +10,49 @@ class TicTacToeGame
     @cpu = Player.new
     @human = Player.new(false)
   end
-        
-  def play(do_loop=true)
+          
+  def play
     print_initial_instruction
-    while do_loop
-      if human_turn
-        human_scan = scan_board(@human)
-        break if game_finished?(human_scan)
-        
-        cpu_scan = scan_board(@cpu)
-        cpu_turn(cpu_scan, human_scan)
-        print_board
-        break if game_finished?(scan_board(@cpu))
-      else
-        puts "Invalid Move. Please try again."
-      end
-    end
+    interact_with_human
     play if continue_to_play? 
   end
+         
+  def print_board
+    TicTacToePrint.print_board(@game)
+  end
+  
+  def scan_board(player)
+    TicTacToeScan.new(@game, player)
+  end       
           
   private
-  
+    
   def print_initial_instruction
     puts "Welcome to a Tic-Tac-Toe Game!\nYou are playing against the computer. Try to win."
     puts "CPU marker is #{@cpu.marker}\nYour marker is #{@human.marker}"
     print_board
   end
   
-  def scan_board(player)
-    TicTacToeScan.new(@game, player)
+  def interact_with_human
+    loop do
+      if human_turn
+        break if game_over?
+      else
+        puts "Invalid Move. Please try again."
+      end
+    end
   end
   
-  def print_board
-    TicTacToePrint.print_board(@game)
+  def game_over?
+    human_scan = scan_board(@human)
+    return true if game_finished?(human_scan)
+    
+    cpu_scan = scan_board(@cpu)
+    cpu_turn(cpu_scan, human_scan)
+    print_board
+    return true if game_finished?(scan_board(@cpu))
   end
-  
+    
   def human_turn
     print "Your Next Move (for example A1 or C3): "
     input = STDIN.gets.chomp().upcase
@@ -59,7 +67,7 @@ class TicTacToeGame
       
   def calculate_cpu_cell(cpu_scan, human_scan)
     playable_cells = cpu_scan.get_playable_cells
-    to_block = human_scan.get_playable_cells
+    to_block       = human_scan.get_playable_cells
     
     if playable_cells[2] && playable_cells[2].length > 0
       cpu_cell = playable_cells[2].first
@@ -93,11 +101,9 @@ class TicTacToeGame
   def continue_to_play?
     print "Would you like to play again? (Y or N): "
     if STDIN.gets.chomp() =~ /Y|y/
-      @game = TicTacToe.new
-      true
-    else 
-      false
+      return true
     end
+    false
   end
   
 end
